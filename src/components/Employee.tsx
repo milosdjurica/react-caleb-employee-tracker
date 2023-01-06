@@ -1,5 +1,10 @@
-function Employee() {
-	return <h3>Here is employee</h3>;
+function Employee(props: any) {
+	return (
+		<>
+			<h3>Employee {props.name}</h3>
+			<p>{props.role ? props.role : "No role"}</p>
+		</>
+	);
 }
 
 export default Employee;
