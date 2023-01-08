@@ -2,6 +2,8 @@ import "./App.css";
 import Employee from "./components/Employee";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import AddEmployee from "./components/AddEmployee";
+import EditEmployee from "./components/EditEmployee";
 
 function App() {
 	const showEmployees = true;
@@ -9,7 +11,7 @@ function App() {
 	const [devRole, setDevRole] = useState<string>();
 	const [employees, setEmployees] = useState([
 		{
-			id: 1,
+			id: "1",
 			name: "John",
 			role: "Director",
 			img: "https://images.unsplash.com/photo-1669719468229-44c8e3e5c09e",
@@ -45,6 +47,17 @@ function App() {
 		},
 	]);
 
+	function createEmployee(name: any, role: any, img: any) {
+		let newEmployee = {
+			id: uuidv4(),
+			name,
+			role,
+			img,
+		};
+
+		setEmployees([...employees, newEmployee]);
+	}
+
 	function updateEmployee(id: any, newName: any, newRole: any) {
 		const updatedEmployees = employees.map((el) => {
 			if (id === el.id) {
@@ -56,7 +69,7 @@ function App() {
 	}
 
 	return (
-		<div className="App bg-red-300">
+		<div className="App">
 			{showEmployees ? (
 				<>
 					<input
@@ -67,6 +80,15 @@ function App() {
 					/>
 					<div className="flex flex-wrap justify-center">
 						{employees.map((el) => {
+							const editEmployee = (
+								<EditEmployee
+									id={el.id}
+									name={el.name}
+									role={el.role}
+									updateEmployee={updateEmployee}
+								/>
+							);
+
 							return (
 								<Employee
 									key={uuidv4()}
@@ -74,11 +96,12 @@ function App() {
 									name={el.name}
 									role={el.role}
 									img={el.img}
-									updateEmployee={updateEmployee}
+									editEmployee={editEmployee}
 								/>
 							);
 						})}
 					</div>
+					<AddEmployee createEmployee={createEmployee} />
 				</>
 			) : (
 				<p>You cant see employees</p>
