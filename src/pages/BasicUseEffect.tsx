@@ -1,3 +1,7 @@
+// !This was just a refference to code from before
+// !Saved because of notes about useEffect
+
+
 import { useEffect, useState } from "react";
 
 export default function Dictionary() {
@@ -19,7 +23,8 @@ export default function Dictionary() {
     // 1. -- no dependency array
     // 2. -- empty dependency array (called only on page load)
     // 3. -- specified dependency array 
-    // (example: if it takes only word, it DOES NOT guarantee for word2 to be up to date)
+    // (example: if it takes only some states, 
+	// then it DOES NOT guarantee for all other states to be up to date (because async))
 
 
 
