@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import AddEmployee from "../components/AddEmployee";
-import EditEmployee from "../components/EditEmployee";
+import AddEmployee from "../components/modals/AddEmployee";
 import Employee from "../components/Employee";
 import "../App.css";
+import EditEmployee from "../components/modals/EditEmployee";
 
 function Employees() {
 	const showEmployees = true;
