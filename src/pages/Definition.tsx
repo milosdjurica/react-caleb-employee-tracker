@@ -6,8 +6,8 @@ import NotFound from "../components/NotFound";
 
 export default function Definition() {
 	const [word, setWord] = useState([]);
-	const [notFound, setNotFound] = useState(false);
-	const [error, setError] = useState(false);
+	const [notFound, setNotFound] = useState<boolean>(false);
+	const [error, setError] = useState<boolean>(false);
 
 	let { search } = useParams();
 
