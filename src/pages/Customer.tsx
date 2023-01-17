@@ -18,7 +18,6 @@ export default function Customer() {
 	const [tempCustomer, setTempCustomer] = useState<Customer>();
 
 	const { id } = useParams();
-
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -37,7 +36,8 @@ export default function Customer() {
 			});
 	}, []);
 
-	function updateCustomer() {
+	function updateCustomer(e: any) {
+		e.preventDefault();
 		const url = baseURL + id;
 		fetch(url, {
 			method: "PATCH",
@@ -54,82 +54,118 @@ export default function Customer() {
 	}
 
 	return (
-		<>
+		<div className="p-3">
 			{notFound ? (
 				<NotFound message={`Customer with ID '${id}' was not found!`} />
 			) : tempCustomer ? (
-				<>
+				<div>
 					<h1>Info about customer: </h1>
-					<div>
-						<strong>Id : </strong> {tempCustomer._id}
-					</div>
-					<div>
-						<strong>Name : </strong>
+					<form
+						id="customer"
+						onSubmit={updateCustomer}
+						className="w-full max-w-sm"
+					>
+						<div className="md:flex md:items-center mb-6">
+							<div className="md:w-1/4">
+								<label className="font-bold">Id : </label>
+							</div>
+							<div className="md:w-3/4">{tempCustomer._id}</div>
+						</div>
+						<div className="md:flex md:items-center mb-6">
+							<div className="md:w-1/4">
+								<label className="font-bold" htmlFor="name">
+									Name :{" "}
+								</label>
+							</div>
+							<div className="md:w-3/4">
+								<input
+									id="name"
+									className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+									type="text"
+									value={tempCustomer.name}
+									onChange={(e) => {
+										setTempCustomer({ ...tempCustomer, name: e.target.value });
+									}}
+								/>
+							</div>
+						</div>
+						<div className="md:flex md:items-center mb-6">
+							<div className="md:w-1/4">
+								<label className="font-bold" htmlFor="industry">
+									Industry :{" "}
+								</label>
+							</div>
+							<div className="md:w-3/4">
+								<input
+									id="industry"
+									className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+									type="text"
+									value={tempCustomer.industry}
+									onChange={(e) => {
+										setTempCustomer({
+											...tempCustomer,
+											industry: e.target.value,
+										});
+									}}
+								/>
+							</div>
+						</div>
+					</form>
 
-						<input
-							className="m-2 px-2"
-							type="text"
-							value={tempCustomer.name}
-							onChange={(e) => {
-								setTempCustomer({ ...tempCustomer, name: e.target.value });
-							}}
-						/>
-					</div>
+					{customer?.name !== tempCustomer?.name ||
+					customer?.industry !== tempCustomer?.industry ? (
+						<div className="mb-2">
+							<button
+								form="customer"
+								className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 mr-2 rounded"
+							>
+								Save
+							</button>
+
+							<button
+								className="bg-slate-400 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded"
+								onClick={() => {
+									if (customer) setTempCustomer({ ...customer });
+								}}
+							>
+								Cancel
+							</button>
+						</div>
+					) : null}
+
 					<div>
-						<strong>Industry : </strong>
-						<input
-							className="m-2 px-2"
-							type="text"
-							value={tempCustomer.industry}
-							onChange={(e) => {
-								setTempCustomer({ ...tempCustomer, industry: e.target.value });
-							}}
-						/>
-					</div>
-					<button
-						className="m-2"
-						onClick={() => {
-							const url = baseURL + id;
-							fetch(url, {
-								method: "DELETE",
-								headers: {
-									"Content-type": "application/json",
-								},
-							})
-								.then((res) => {
-									if (!res.ok) {
-										throw new Error("Something went wrong");
-									}
-									alert("Succesfully deleted");
-									navigate("/customers");
+						<button
+							className="bg-slate-800 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded"
+							onClick={() => {
+								const url = baseURL + id;
+								fetch(url, {
+									method: "DELETE",
+									headers: {
+										"Content-type": "application/json",
+									},
 								})
-								.catch((e) => console.log(e));
-						}}
-					>
-						Delete customer
-					</button>
-				</>
-			) : null}
-			{customer?.name !== tempCustomer?.name ||
-			customer?.industry !== tempCustomer?.industry ? (
-				<>
-					<button className="m-2" onClick={updateCustomer}>
-						Save changes
-					</button>
-
-					<button
-						className="m-2"
-						onClick={() => {
-							if (customer) setTempCustomer({ ...customer });
-						}}
-					>
-						Cancel
-					</button>
-				</>
+									.then((res) => {
+										if (!res.ok) {
+											throw new Error("Something went wrong");
+										}
+										alert("Succesfully deleted");
+										navigate("/customers");
+									})
+									.catch((e) => console.log(e));
+							}}
+						>
+							Delete
+						</button>
+					</div>
+				</div>
 			) : null}
 
 			<br />
-			<Link to="/customers">Go back</Link>
-		</>
+			<Link to="/customers">
+				<button className="no-underline bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+					← Go back
+				</button>
+			</Link>
+		</div>
 	);
 }
