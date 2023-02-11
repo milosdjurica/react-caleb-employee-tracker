@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { LoginContext } from "../App";
 import AddCustomer from "../components/modals/AddCustomer";
 import { baseURL } from "../shared";
 import { Customer } from "./Customer";
@@ -11,6 +12,8 @@ export default function Customers() {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [loggedIn, setLoggedIn] = useContext(LoginContext);
+
     useEffect(() => {
         const url = baseURL + "customers";
         fetch(url, {
@@ -21,6 +24,7 @@ export default function Customers() {
         })
             .then((res) => {
                 if (res.status === 401) {
+                    setLoggedIn(false);
                     navigate("/login", {
                         state: {
                             // location.pathname je url na kojem smo trenutno ('/customers')

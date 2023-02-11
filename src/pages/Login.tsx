@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { baseURL } from "../shared";
 import { useLocation, useNavigate } from "react-router-dom";
+import { LoginContext } from "../App";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -8,6 +9,7 @@ export default function Login() {
 
     const location = useLocation();
     const navigate = useNavigate();
+    const [loggedIn, setLoggedIn] = useContext(LoginContext);
 
     function login(e: any) {
         e.preventDefault();
@@ -28,6 +30,7 @@ export default function Login() {
             .then((data) => {
                 localStorage.setItem("access-token", data.access_token);
                 localStorage.setItem("refresh-token", data.refresh_token);
+                setLoggedIn(true);
                 console.log(location);
                 navigate(
                     location?.state?.previousUrl
