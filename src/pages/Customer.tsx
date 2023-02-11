@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import NotFound from "../components/NotFound";
 import { baseURL } from "../shared";
 
@@ -19,6 +19,7 @@ export default function Customer() {
 
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const url = baseURL + "customers/" + id;
@@ -30,7 +31,11 @@ export default function Customer() {
         })
             .then((res) => {
                 if (res.status === 401) {
-                    navigate("/login");
+                    navigate("/login", {
+                        state: {
+                            previousUrl: location.pathname,
+                        },
+                    });
                 }
                 if (res.status === 404) {
                     setNotFound(true);
@@ -57,7 +62,11 @@ export default function Customer() {
         })
             .then((res) => {
                 if (res.status === 401) {
-                    navigate("/login");
+                    navigate("/login", {
+                        state: {
+                            previousUrl: location.pathname,
+                        },
+                    });
                 }
                 return res.json();
             })
@@ -170,7 +179,12 @@ export default function Customer() {
                                 })
                                     .then((res) => {
                                         if (res.status === 401) {
-                                            navigate("/login");
+                                            navigate("/login", {
+                                                state: {
+                                                    previousUrl:
+                                                        location.pathname,
+                                                },
+                                            });
                                         }
 
                                         if (!res.ok) {

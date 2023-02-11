@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import AddCustomer from "../components/modals/AddCustomer";
 import { baseURL } from "../shared";
 import { Customer } from "./Customer";
@@ -9,6 +9,7 @@ export default function Customers() {
     const [show, setShow] = useState(false);
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const url = baseURL + "customers";
@@ -20,7 +21,14 @@ export default function Customers() {
         })
             .then((res) => {
                 if (res.status === 401) {
-                    navigate("/login");
+                    navigate("/login", {
+                        state: {
+                            // location.pathname je url na kojem smo trenutno ('/customers')
+                            // prosledjujemo ga login-u
+                            // on ce redirect nazad na ovaj url nakon sto se unesu email i sifra
+                            previousUrl: location.pathname,
+                        },
+                    });
                 }
 
                 return res.json();
