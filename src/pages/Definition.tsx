@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import DefinitionSearch from "../components/DefinitionSearch";
@@ -7,9 +8,23 @@ import useFetch from "../hooks/UseFetch";
 export default function Definition() {
     let { search } = useParams();
 
-    const [data, errorStatus]: any = useFetch(
+    // !More intuitive way of dealing with this
+    const {
+        request,
+        data: words,
+        errorStatus,
+    }: any = useFetch(
         "https://api.dictionaryapi.dev/api/v2/entries/en/" + search
     );
+    // !Cleaner but not so intuitive. Basically accessing properties few layers down
+    // ! meanings === words[0].meanings
+    // const { request, data: [{ meanings }] = [{}], errorStatus }: any = useFetch(
+    //     "https://api.dictionaryapi.dev/api/v2/entries/en/" + search
+    // );
+
+    useEffect(() => {
+        request();
+    }, []);
 
     if (errorStatus === 404) {
         return (
@@ -31,10 +46,10 @@ export default function Definition() {
 
     return (
         <>
-            {data?.[0]?.meanings ? (
+            {words?.[0]?.meanings ? (
                 <>
                     <h1>Here is Definition: </h1>
-                    {data[0].meanings.map((meaning: any) => {
+                    {words[0].meanings.map((meaning: any) => {
                         return (
                             <p key={uuidv4()}>
                                 {meaning.partOfSpeech} :{" "}
