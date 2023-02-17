@@ -8,11 +8,47 @@ import Definition from "./pages/Definition";
 import NotFound from "./components/NotFound";
 import Customer from "./pages/Customer";
 import Login from "./pages/Login";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { baseURL } from "./shared";
 
 export const LoginContext = createContext({});
 
 function App() {
+    useEffect(() => {
+        if (localStorage.getItem("refresh-token")) {
+            function refreshTokens() {
+                const url = baseURL + "auth/refresh";
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization:
+                            "Bearer " + localStorage.getItem("refresh-token"),
+                    },
+                    // !tutorial is done in this way,
+                    // !but my backend setup is different
+                    // !so i did thing with Authorization header
+                    // body: JSON.stringify({
+                    //     refresh: localStorage['refresh-token'],
+                    // }),
+                })
+                    .then((res) => {
+                        return res.json();
+                    })
+                    .then((data) => {
+                        console.log(data);
+                        localStorage["access-token"] = data["access_token"];
+                        localStorage["refresh-token"] = data["refresh_token"];
+                        setLoggedIn(true);
+                    });
+            }
+
+            const minute = 1000 * 60;
+            refreshTokens();
+            setInterval(refreshTokens, 9 * minute);
+        }
+    }, []);
+
     // check local storage for access token
     const [loggedIn, setLoggedIn] = useState(
         localStorage.getItem("access-token") ? true : false

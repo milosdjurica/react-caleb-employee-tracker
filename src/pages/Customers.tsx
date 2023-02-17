@@ -64,7 +64,7 @@ export default function Customers() {
             })
             .then((data) => {
                 toggleShow();
-                console.log(data);
+                // console.log(data);
                 // const cust: any = [...customers];
                 setCustomers([...customers, data]);
             })
