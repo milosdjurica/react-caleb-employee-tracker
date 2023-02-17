@@ -10,8 +10,13 @@ import Customer from "./pages/Customer";
 import Login from "./pages/Login";
 import { createContext, useEffect, useState } from "react";
 import { baseURL } from "./shared";
+import Register from "./pages/Register";
 
-export const LoginContext = createContext({});
+// ! iteratorFix fixes this error
+// !Type '{}' must have a '[Symbol.iterator]()' method that returns an iterator.ts(2488)
+const iteratorFix: any = {};
+export const LoginContext = createContext(iteratorFix);
+// export const LoginContext = createContext({});
 
 function App() {
     useEffect(() => {
@@ -69,6 +74,7 @@ function App() {
                         <Route path="/customers/:id" element={<Customer />} />
 
                         <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
 
                         <Route path="/dictionary" element={<Dictionary />} />
                         <Route
