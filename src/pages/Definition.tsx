@@ -1,42 +1,17 @@
-import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import DefinitionSearch from "../components/DefinitionSearch";
 import NotFound from "../components/NotFound";
+import useFetch from "../hooks/UseFetch";
 
 export default function Definition() {
-    const [word, setWord] = useState([]);
-    const [notFound, setNotFound] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
-
     let { search } = useParams();
 
-    useEffect(() => {
-        const url = "https://api.dictionaryapi.dev/api/v2/entries/en/" + search;
-        // const url = "https://httpstat.us/401";
-        fetch(url)
-            .then((res) => {
-                // console.log(res.status);
-                if (res.status === 404) {
-                    setNotFound(true);
-                }
-                if (!res.ok) {
-                    setError(true);
-                    throw new Error("Something not OK!");
-                }
+    const [data, errorStatus]: any = useFetch(
+        "https://api.dictionaryapi.dev/api/v2/entries/en/" + search
+    );
 
-                return res.json();
-            })
-            .then((data) => {
-                // console.log(data[0].meanings);
-                setWord(data[0].meanings);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    }, []);
-
-    if (notFound) {
+    if (errorStatus === 404) {
         return (
             <>
                 <NotFound />
@@ -45,10 +20,10 @@ export default function Definition() {
         );
     }
 
-    if (error) {
+    if (errorStatus) {
         return (
             <>
-                <p>There was some error</p>
+                <p>There was some server error. Try again later</p>
                 <Link to="/dictionary">Search another</Link>
             </>
         );
@@ -56,10 +31,10 @@ export default function Definition() {
 
     return (
         <>
-            {word.length > 0 ? (
+            {data?.[0]?.meanings ? (
                 <>
                     <h1>Here is Definition: </h1>
-                    {word.map((meaning: any) => {
+                    {data[0].meanings.map((meaning: any) => {
                         return (
                             <p key={uuidv4()}>
                                 {meaning.partOfSpeech} :{" "}
@@ -67,10 +42,10 @@ export default function Definition() {
                             </p>
                         );
                     })}
+                    <p>Search again</p>
+                    <DefinitionSearch />
                 </>
             ) : null}
-            <p>Search again</p>
-            <DefinitionSearch />
         </>
     );
 }
